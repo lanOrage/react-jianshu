@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{Suspense} from 'react'
 import {BrowserRouter,Route,Switch} from 'react-router-dom'
 import Header from './common/header/header'
 import {GlobalStyle} from './style';
@@ -6,8 +6,13 @@ import {IconFontStyle} from './static/iconfont/iconfont'
 import {Provider} from 'react-redux'
 import store from './redux/store'
 
+import ErrorBoundary from './common/ErrorBoundary '
 import Home from './page/home/home'
-import Detail from './page/detail/detail'
+// import LoadableDetail from './page/detail/loadable'
+import Login from './page/login/login'
+import Write from './page/home/component/Write'
+
+const LoadableDetail = React.lazy(()=>import('./page/detail/detail'))
 
 export default class App extends React.Component{
  render(){
@@ -15,16 +20,21 @@ export default class App extends React.Component{
       <Provider store={store}>
         <GlobalStyle/>
         <IconFontStyle/>
-        {/* 简书header */}
-        <Header/>
+        
         {/* 简书body */}
         <BrowserRouter>
-            <Switch>
-              <>
-              <Route path="/" component={Home}></Route>
-              <Route path="/detail" component={Detail}></Route>
-              </>
-            </Switch>
+              <ErrorBoundary>
+                {/* 简书header */}
+                <Header/>
+                <Suspense fallback={<div>正在加载中...</div>}>
+                  <Switch>
+                    <Route path="/" exact component={Home}></Route>
+                    <Route path="/login" component={Login}></Route>
+                    <Route path="/write" component={Write}></Route>
+                      <Route path="/detail/:id" component={LoadableDetail}></Route>
+                  </Switch>
+                </Suspense>
+              </ErrorBoundary>      
         </BrowserRouter>
       </Provider>
     );

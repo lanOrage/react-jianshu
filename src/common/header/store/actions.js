@@ -17,7 +17,7 @@ export const getSearchList=()=>{
     return async dispatch=>{
         // 发送ajax请求，获取数据
         const response = await axios.get('http://localhost:3000/data');
-        const data=response.data;
-        dispatch(showSearchList(data))
+        const searchList=response.data.searchList;
+        dispatch(showSearchList(searchList))
     }
 }

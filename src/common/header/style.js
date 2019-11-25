@@ -6,11 +6,11 @@ export const HeaderWrapper = styled.div`
     height:58px;
     border-bottom:1px solid #f0f0f0;
     position:relative;
+    box-shadow:0 1px 5px 0px #ccc;
+    user-select:none;
 `;
 
-export const Logo = styled.a.attrs({
-    href:'/'
-})`
+export const Logo = styled.div`
     width:100px;
     height:58px;
     display:inline-block;
@@ -142,7 +142,7 @@ export const SearchSwitch=styled.div`
         position:absolute;
         top:-4px;
         right:35px;
-        transition:all 0.3s ease-in;
+        transition:all 0.2s ease-in;
         transform-origin:center center;
     }
 `;

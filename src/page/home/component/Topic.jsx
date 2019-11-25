@@ -1,16 +1,22 @@
-import React,{Component}from 'react'
+import React,{PureComponent}from 'react'
 import {connect} from 'react-redux'
 import {TopicWrapper,TopicItem} from '../style'
-class Topic extends Component{
+import {getTopicList} from '../store/actions'
+// import logo from '../img/logo.png'
+
+class Topic extends PureComponent{
+    componentDidMount(){
+        this.props.getTopicList()
+    }
     render(){
         return (
             <TopicWrapper>
                 {
                     this.props.topicList.map((item)=>{
                         // const {imgUrl,text,id}=item不能解构!!是mmutable对象数组
-                        let imgUrl=item.get('imgUrl')
                         let text=item.get('text')
                         let id=item.get('id')
+                        let imgUrl=item.get('imgUrl')//这里我把require('../img/logo.png')改成了'./img/logo.png'才能获取，资源在public下
                         return (
                         <TopicItem key={id}>
                             <img src={imgUrl} alt={text} className="topic-img"/>
@@ -29,5 +35,5 @@ export default connect(
     state=>({
         topicList:state.get('HomeReducer').get('topicList')
     }),
-    null
+    {getTopicList}
 )(Topic)

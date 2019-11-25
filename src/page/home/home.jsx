@@ -1,14 +1,46 @@
-import React,{Component}from 'react'
+import React,{PureComponent}from 'react'
 import List from './component/List'
 import Recommend from './component/Recommend'
 import Topic from './component/Topic'
 import Writer from './component/Writer'
+import Download from './component/Download'
 
 
-import {HomeWrapper,HomeLeft,HomeRight} from './style'
+import {HomeWrapper,HomeLeft,HomeRight,BackTop} from './style'
 import banner from './img/logo.png'
 
-export default class Home extends Component{
+export default class Home extends PureComponent{
+    constructor(props){
+        super(props)
+        this.BACKTOP=React.createRef()
+    }
+    componentDidMount(){
+        window.addEventListener('scroll',this.handleBackTop)
+    }
+
+    componentWillUnmount(){
+        window.removeEventListener('scroll',this.handleBackTop)
+    }
+
+    handleBackTop=()=>{
+        this.scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop
+        if(this.scrollTop>100){
+            this.BACKTOP.current.style.opacity=1
+        }else{
+            this.BACKTOP.current.style.opacity=0
+        }
+    }
+    backTop=()=>{
+        let id=setInterval(()=>{
+                this.scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop
+                this.scrollTop-=70
+                window.scrollTo(0,this.scrollTop)
+                if(this.scrollTop<70){
+                    window.scrollTo(0,0)
+                    clearInterval(id)
+                }
+        },1000/60)
+    }
     render(){
         return (
             <>
@@ -19,10 +51,12 @@ export default class Home extends Component{
                         <List></List>
                     </HomeLeft>
                     <HomeRight>
-                        <Recommend></Recommend>
-                        <Writer></Writer>
+                        <Recommend/>
+                        <Download/>
+                        <Writer/>
                     </HomeRight>
                 </HomeWrapper>
+                <BackTop ref={this.BACKTOP} onClick={this.backTop}>回到顶部</BackTop>
                 <footer style={footer}>
                     <span>关于简书 · 联系我们 · 加入我们 · 简书出版 · 品牌与徽标 · 帮助中心 · 合作伙伴</span>
                     <p>©2012-2019 上海佰集信息科技有限公司 / 简书 / 沪ICP备11018329号-5 / Smrz 沪公网安备31010402002252号 /</p>

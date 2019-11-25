@@ -1,7 +1,9 @@
 import React,{ Component } from 'react'
 import {connect} from 'react-redux'
 import { CSSTransition } from 'react-transition-group'
+import {Link} from 'react-router-dom'
 import { HeaderAction } from './store'
+import {handleLogout} from '../../page/login/store/actions'
 import {
         HeaderWrapper,Logo,Nav,NavItem,Search,NavSearch,Addition,Button
         ,SearchInfo,SearchTittle,SearchSwitch,SearchItem,SearchInfoList
@@ -43,14 +45,29 @@ class Header extends Component{
         // 补充：
         // Immutable中List: 有序索引集，类似JavaScript中的Array。长度要用size获取
     }
+    delInfo=()=>{
+        // 删除store中user的信息
+        this.props.handleLogout()
+    }
     render(){
         return (
             <HeaderWrapper>
-                <Logo/>
+                <Link to='/'>
+                    <Logo/>
+                </Link>
                 <Nav>
                     <NavItem className='active'>首页</NavItem>
                     <NavItem>下载APP</NavItem>
-                    <NavItem className='right'>登录</NavItem>
+                    {
+                        this.props.user && this.props.pwd? 
+                        <Link to='/'>
+                            <NavItem className='right' onClick={this.delInfo}>退出</NavItem>
+                        </Link>:
+                        <Link to='/login'>
+                            <NavItem className='right'>登录</NavItem>
+                        </Link>
+                    }
+                   
                     <NavItem className='right'>
                         <span className="iconfont" style={{fontSize:25}}>&#xe636;</span>
                     </NavItem>
@@ -94,11 +111,15 @@ class Header extends Component{
                     </Search>
                     
                     <Addition>
-                        <Button className='writing'>
-                            <span className="iconfont">&#xe60e;</span>
-                            &nbsp;写文章
-                        </Button>
-                        <Button className='register'>注册</Button>
+                        <Link to='/write'>
+                            <Button className='writing'>
+                                <span className="iconfont">&#xe60e;</span>
+                                &nbsp;写文章
+                            </Button>
+                        </Link>
+                        {
+                             this.props.user && this.props.pwd? null:<Button className='register'>注册</Button>
+                        }
                     </Addition>
                 </Nav>
             </HeaderWrapper>
@@ -113,6 +134,8 @@ export default connect(
         currentPage:state.get('HeaderReducer').get('currentPage'),
         mouseIn:state.get('HeaderReducer').get('mouseIn'),
         totalPage:state.get('HeaderReducer').get('totalPage'),
+        user:state.getIn(['LoginReducer','user']),
+        pwd:state.getIn(['LoginReducer','pwd'])
     }),
-    {focusedSearch,blurSearch,getSearchList,mouseEnter,mouseLeave,nextPage}
+    {focusedSearch,blurSearch,getSearchList,mouseEnter,mouseLeave,nextPage,handleLogout}
 )(Header)
